@@ -186,10 +186,20 @@ def generate(dim):
 
     return M
 
-def generate_and_save(dim, number):
-    M = np.zeros((number, dim))
-    for i in tqdm(range(number)):
-        M[i] = generate(dim).real
-    np.save(f"/Users/shuramakarenko/LocalDocs/Workspace/Neiro_toyeplitz/DATA/Matrix1024/Sample", M)
+import torch 
 
-#generate_and_save(1024, 10**4)
+def generate_and_save(dim, number):
+    M = torch.zeros((number, dim))
+    C = torch.zeros((number, dim))
+    for i in tqdm(range(number)):
+        M[i] = torch.from_numpy(generate(dim).imag)
+        # Делаем оптимальные циркулянты
+        n_min_i = np.arange(dim)
+        n_i = dim - n_min_i
+        M_i_numpy = M[i].numpy()  # Преобразование тензора в numpy массив
+        C[i] = torch.from_numpy((M_i_numpy * n_i + n_min_i * np.roll(M_i_numpy[::-1], 1)) / dim)
+    torch.save(M, f"/Users/shuramakarenko/LocalDocs/Workspace/Neiro_toyeplitz/DATA/Matrix1024/Samples.pth")
+    torch.save(C, f"/Users/shuramakarenko/LocalDocs/Workspace/Neiro_toyeplitz/DATA/Matrix1024/Targets.pth")
+
+
+generate_and_save(1024, 10**4)
