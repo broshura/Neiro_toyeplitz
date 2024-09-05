@@ -189,10 +189,10 @@ def generate(dim):
 import torch 
 
 def generate_and_save(dim, number):
-    M = torch.zeros((number, dim))
-    C = torch.zeros((number, dim))
+    M = torch.zeros((number, dim), dtype = torch.complex64)
+    C = torch.zeros((number, dim), dtype = torch.complex64)
     for i in tqdm(range(number)):
-        M[i] = torch.from_numpy(generate(dim).imag)
+        M[i] = torch.from_numpy(generate(dim))
         # Делаем оптимальные циркулянты
         n_min_i = np.arange(dim)
         n_i = dim - n_min_i
